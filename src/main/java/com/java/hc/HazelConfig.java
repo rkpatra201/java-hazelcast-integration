@@ -1,8 +1,6 @@
 package com.java.hc;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -17,6 +15,7 @@ public class HazelConfig {
      //   JoinConfig join = network.getJoin();
       //  join.getMulticastConfig().setEnabled(true);
        // config.setNetworkConfig(network);
+       // config.getCPSubsystemConfig().setCPMemberCount(2);
         return config;
     }
 

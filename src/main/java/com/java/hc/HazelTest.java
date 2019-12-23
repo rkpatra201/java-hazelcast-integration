@@ -1,6 +1,7 @@
 package com.java.hc;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.ILock;
 import com.hazelcast.core.IMap;
 
 import java.util.Map;
@@ -21,8 +22,17 @@ public class HazelTest {
         HazelcastInstance instance = HazelConfig.getHazelCastInstance();
         Map<String, String> map = instance.getMap("dataMap");
         int i = 0;
+        ILock lock = getFencedLock(instance);
+        lock.lock();
         while (true) {
             System.out.println(map.size());
+            i++;
+            if(i==9)
+            {
+                lock.unlock();
+                System.out.println("releasing consumer lock");
+                break;
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -31,15 +41,28 @@ public class HazelTest {
         }
     }
 
+    public static ILock getFencedLock(HazelcastInstance hazelcastInstance)
+    {
+        ILock fencedLock = hazelcastInstance.getLock("lock-1");
+        return fencedLock;
+    }
     public static void producer() {
         HazelcastInstance instance = HazelConfig.getHazelCastInstance();
         Map<String, String> map = instance.getMap("dataMap");
         int i = 0;
+        ILock lock = getFencedLock(instance);
+        lock.lock();
         while (true) {
             i++;
             ((IMap<String, String>) map).put("k" + i, "v");
             System.out.println("producing");
 
+            if(i==10)
+            {
+                System.out.println("releasing producer lock");
+                lock.unlock();
+                break;
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

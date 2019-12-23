@@ -15,7 +15,7 @@ public class HazelConfig {
       //  network.setPort(5701);
        // network.setPortAutoIncrement(false);
         JoinConfig join = network.getJoin();
-        join.getMulticastConfig().setEnabled(true);
+      //  join.getMulticastConfig().setEnabled(true);
        // config.setNetworkConfig(network);
         return config;
     }
